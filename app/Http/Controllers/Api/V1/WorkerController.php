@@ -20,8 +20,11 @@ class WorkerController extends Controller
         $workerDto = new CreateWorkerDto(
             $validatedRequest['email'],
             $validatedRequest['password'],
-            $validatedRequest['hourly_rate']
+            $validatedRequest['hourly_rate'] ?? null,
+            $validatedRequest['payment_type'],
+            $validatedRequest['weekly_salary'] ?? null,
         );
+
 
         $this->workerService->create($workerDto);
 

@@ -4,34 +4,21 @@ namespace Tests\Feature;
 
 use App\Models\Worker;
 use App\Models\WorkTransaction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UnPaidSalariesTest extends TestCase
+class GetUnpaidSalariesForFixedWorker extends TestCase
 {
-
-    use RefreshDatabase;
-
-    public function testExample()
+    public function testExample(): void
     {
         $worker = Worker::factory()->create([
             'payment_type' => 'fixed',
-            'weekly_salary' => 500,
+            'weekly_salary' => 1000,
         ]);
-
         WorkTransaction::factory()->create([
             'worker_id' => $worker->id,
-            'hours' => 10,
-            'is_paid' => 0,
             'week_id' => 1,
-        ]);
-
-        WorkTransaction::factory()->create([
-            'worker_id' => $worker->id,
-            'hours' => 5,
-            'is_paid' => 0,
-            'week_id' => 2,
+            'hours' => 0,
+            'is_paid' => false,
         ]);
 
         $response = $this->getJson('/api/v1/unpaid-salaries');

@@ -2,27 +2,26 @@
 
 namespace Tests\Feature;
 
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CreateWorkerTest extends TestCase
+class CreateWorkerWithFixedSalary extends TestCase
 {
 
-    use RefreshDatabase;
 
     public function testExample(): void
     {
         $response = $this->postJson('/api/v1/workers', [
-            'email' => 'test@example.com',
+            'email' => 'fixed@example.com',
             'password' => 'password',
-            'hourly_rate' => 300,
-            'payment_type' => 'hourly',
+            'payment_type' => 'fixed',
+            'weekly_salary' => 1000,
         ]);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('workers', [
-            'email' => 'test@example.com',
+            'email' => 'fixed@example.com',
+            'payment_type' => 'fixed',
+            'weekly_salary' => 1000,
         ]);
     }
 }

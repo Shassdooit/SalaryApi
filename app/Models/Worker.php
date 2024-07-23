@@ -14,6 +14,8 @@ class Worker extends Model
         'email',
         'password',
         'hourly_rate',
+        'payment_type',
+        'weekly_salary',
     ];
 
     protected $hidden = [
@@ -23,5 +25,15 @@ class Worker extends Model
     public function workTransactions(): HasMany
     {
         return $this->hasMany(WorkTransaction::class);
+    }
+
+    public function isHourly(): bool
+    {
+        return $this->payment_type === 'hourly';
+    }
+
+    public function isFixed(): bool
+    {
+        return $this->payment_type === 'fixed';
     }
 }

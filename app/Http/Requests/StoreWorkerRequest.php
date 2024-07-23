@@ -18,6 +18,8 @@ class StoreWorkerRequest extends FormRequest
             'email' => 'required|email|unique:workers,email',
             'password' => 'required|min:6',
             'hourly_rate' => 'required|integer|min:0',
+            'payment_type' => 'required|in:hourly,fixed',
+            'weekly_salary' => 'nullable|numeric',
         ];
     }
 }

@@ -14,7 +14,12 @@ class PaymentService
             ->join('workers', 'work_transactions.worker_id', '=', 'workers.id')
             ->select(
                 'work_transactions.worker_id',
-                DB::raw('SUM(work_transactions.hours * workers.hourly_rate) as unpaid_amount')
+                DB::raw(
+                    'CASE
+                            WHEN workers.payment_type = "hourly" THEN SUM(work_transactions.hours * workers.hourly_rate)
+                            WHEN workers.payment_type = "fixed" THEN workers.weekly_salary * COUNT(DISTINCT work_transactions.week_id)
+                         END as unpaid_amount'
+                )
             )
             ->where('work_transactions.is_paid', false)
             ->groupBy('work_transactions.worker_id')
@@ -27,8 +32,22 @@ class PaymentService
             $unpaidTransactions = WorkTransaction::where('is_paid', false)->get();
 
             foreach ($unpaidTransactions as $transaction) {
-                $transaction->is_paid = true;
-                $transaction->save();
+                $worker = $transaction->worker;
+
+                if ($worker->isFixed()) {
+                    $weeklyTransactions = WorkTransaction::where('worker_id', $worker->id)
+                        ->where('week_id', $transaction->week_id)
+                        ->where('is_paid', false)
+                        ->get();
+
+                    foreach ($weeklyTransactions as $weeklyTransaction) {
+                        $weeklyTransaction->is_paid = true;
+                        $weeklyTransaction->save();
+                    }
+                } else {
+                    $transaction->is_paid = true;
+                    $transaction->save();
+                }
             }
         });
     }
