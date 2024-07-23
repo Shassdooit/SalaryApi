@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Worker;
 use App\Models\WorkTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UnPaidSalariesTest extends TestCase
